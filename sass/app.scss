@@ -1,10 +1,54 @@
+
 // Global Foundation Settings
 @import "settings";
-
 // Comment out this import if you don't want to use normalize
 @import "normalize";
-
-// Comment out this import if you are customizing you imports below
 @import "foundation";
+
+
+
+
+
+$no-color: #A9014B;
+$label-font-weight:normal;
+
+#list-classified {
+  li {
+    list-style: none;
+  }
+  div {
+    //border: 1px solid;
+    margin: 0px;
+  }
+  .columns {
+    height: 100%;
+    padding: 0;
+  }
+  .panel {
+    margin-bottom: 0.5em !important;
+    padding: 0;
+  }
+  .date-classified {
+    text-align: right;
+    padding-right: 0.5em;
+  }
+  .label{
+    margin-right: 0.5em;
+  }
+  .icon-classified {
+    padding: 5px !important;
+    i{
+      font-size: 30px;
+      margin-right: 0.5em !important;
+      color: $no-color;
+    }
+  }
+}
+
+
+
+
+
+
 
 
