@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <!--[if IE 8]>
-<html class="no-js lt-ie9" lang="en"> <![endif]-->
+<html  data-ng-app class="no-js lt-ie9" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!-->
-<html class="no-js" lang="en"> <!--<![endif]-->
+<html  data-ng-app="app" class="no-js" lang="en"> <!--<![endif]-->
 
 <head>
     <meta charset="utf-8">
@@ -13,9 +13,11 @@
     <link rel="stylesheet" href="stylesheets/app.css">
     <link rel="stylesheet" href="images/foundation-icons/foundation-icons.css">
 
-
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular-route.min.js"></script>
     <script src="javascripts/vendor/custom.modernizr.js"></script>
     <script src="javascripts/vendor/jquery-2.0.3.min.js"></script>
+    <script src="javascripts/angular.backend.js"></script>
 
 </head>
 <body>
@@ -42,58 +44,18 @@
 
 <div class="row">
     <div class="large-12 columns">
-        <h3>Bienvenu sur CoopZik, le site de regroupement d'artistes </h3>
+        <h3>Bienvenu sur CoopArt, le site de regroupement d'artistes </h3>
 
-        <p>Vous pouvez <a href="#" class="small button">Creer une annonce</a> ou regarder les annonces pour vous
-            associer dans votre projet artistique</p>
+        <p>Vous pouvez <a href="#" class="small button">creer une annonce</a> ou regarder les annonces existantes pour trouver vos prochains associés de votre projet artistique</p>
         <hr/>
     </div>
 </div>
 
-<div class="row">
-    <div class="large-12 columns">
-
-        <ul id="list-classified">
-            <li>
-                <div class="panel">
-                    <div class="row">
-                    <div class="small-3 columns icon-classified"><i class="fi-ticket"></i><i class="fi-music"></i><i class="fi-microphone"></i></div>
-                    <div class=" small-9 columns">
-
-                        <div class="row">
-                            <div class="small-12 columns">Je cherche qqun qui pourrqit m'aider a monter une piece de theatre</div>
-                        </div>
-                        <div class="row">
-                            <div class="small-9 columns"><span class="label">Regular Label</span><span class="label">Regular Label</span><span class="label">Regular Label</span></div>
-                            <div class="small-3 columns date-classified">13/11/2013</div>
-                        </div>
 
 
-                    </div>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="panel">
-                    <div class="row">
-                        <div class="small-3 columns icon-classified"><i class="fi-lightbulb"></i></div>
-                        <div class=" small-9 columns">
 
-                            <div class="row">
-                                <div class="small-12 columns">Des metalleux dans le coin?</div>
-                            </div>
-                            <div class="row">
-                                <div class="small-9 columns"><span class="label">Regular Label</span></div>
-                                <div class="small-3 columns date-classified">12/03/2009</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </li>
-        </ul>
+<div ng-view></div>
 
-    </div>
-</div>
 
 <script>
     document.write('<script src=' +

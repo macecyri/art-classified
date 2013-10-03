@@ -1,0 +1,56 @@
+<div class="row">
+    <div data-ng-controller="ListClassifiedController" class="large-12 columns">
+
+        <div class="row">
+            <div class="small-12 columns"> Recherche par tags:
+
+                <span data-ng-click="removetag(tag)" class="removable-tag" data-ng-repeat="tag in tags">{{tag}}</span><a
+                        data-reveal-id="myModal" class="add-button"> <i class="fi-plus"></i></a>
+                <a href="#search/{{href}}" class="small button right">Relancer recherche</a>
+                <hr/>
+                {{test}}
+            </div>
+
+        </div>
+
+        <div id="myModal" class="reveal-modal">
+            <ul class="small-block-grid-2 large-block-grid-4">
+                <li data-ng-click="addTag(tag)" class="removable-tag"
+                      data-ng-repeat="tag in tagsList">{{tag}}</li>
+            </ul>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+
+
+        <div class="row">
+            <div class="small-12 columns">Filtrer dans le titre <input ng-model="search.title"><br></div>
+        </div>
+
+
+        <ul id="list-classified">
+            <li data-ng-repeat="classified in classifieds | filter:search">
+                <div class="panel">
+                    <div class="row">
+                        <div class="small-3 columns icon-classified">
+                            <i ng-repeat="criteria in classified.criterias" class="{{criteria.class}}"></i></div>
+                        <div class=" small-9 columns">
+
+                            <div class="row">
+                                <div class="small-12 columns">{{classified.title}}</div>
+                            </div>
+                            <div class="row">
+                                <div class="small-9 columns">
+
+                                <span ng-repeat="label in classified.labels | filter:searchlabel">
+                                    <a href="#search/{{label.title}}" class="tiny button">{{label.title}}</a> </span>
+                                </div>
+                                <div class="small-3 columns date-classified">{{classified.date}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+    </div>
+</div>

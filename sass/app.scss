@@ -1,18 +1,11 @@
-
 // Global Foundation Settings
 @import "settings";
 // Comment out this import if you don't want to use normalize
 @import "normalize";
 @import "foundation";
 
-
-
-
-
-$no-color: #A9014B;
-$label-font-weight:normal;
-
 #list-classified {
+  margin-top: 1em;
   li {
     list-style: none;
   }
@@ -32,16 +25,46 @@ $label-font-weight:normal;
     text-align: right;
     padding-right: 0.5em;
   }
-  .label{
+  .label {
     margin-right: 0.5em;
   }
   .icon-classified {
     padding: 5px !important;
-    i{
+    i {
       font-size: 30px;
       margin-right: 0.5em !important;
       color: $no-color;
     }
+  }
+}
+
+.add-button {
+  $radius: 5em;
+  @extend .secondary;
+  @extend button;
+  @extend .round;
+  @extend .tiny;
+  padding: 0.5em;
+  height: 30px;
+  width: 30px;
+  i {
+    font-size: 15px;
+    height: 20px;
+    width: 20px;
+  }
+}
+
+.removable-tag{
+  @extend .label;
+  &:after {
+    content: "";
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    content: "";
+    background:  url(../images/foundation-icons/svgs/fi-foot.svg) no-repeat 0 0;
+    background-size: 100%;
   }
 }
 
