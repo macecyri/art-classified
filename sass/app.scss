@@ -54,17 +54,57 @@
   }
 }
 
-.removable-tag{
+.tag {
   @extend .label;
-  &:after {
-    content: "";
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 5px;
-    content: "";
-    background:  url(../images/foundation-icons/svgs/fi-foot.svg) no-repeat 0 0;
-    background-size: 100%;
+  margin: 0.5em;
+  padding-left: 1em;
+  padding-right: 0.2em;
+  line-height: 18px;
+
+  i {
+    font-size: 20px;
+    margin-left: 0.1em;
+    color: white;
+    visibility: hidden;
+  }
+
+  &:hover {
+    cursor: pointer;
+    i {
+      visibility: visible;
+    }
+  }
+}
+
+.removable-tag {
+  @extend .tag;
+  &:hover {
+    background-color: red;
+  }
+}
+
+.addable-tag {
+  @extend .tag;
+  i {
+    font-size: 15px;
+  }
+
+  &:hover {
+    background-color: green;
+  }
+}
+
+.added-tag {
+  @extend .addable-tag;
+  background-color: green;
+  &:hover {
+    cursor: default;
+    i {
+      visibility: hidden;
+    }
+  }
+  i {
+    visibility: hidden;
   }
 }
 

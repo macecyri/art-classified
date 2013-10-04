@@ -4,7 +4,10 @@
         <div class="row">
             <div class="small-12 columns"> Recherche par tags:
 
-                <span data-ng-click="removetag(tag)" class="removable-tag" data-ng-repeat="tag in tags">{{tag}}</span><a
+                <span data-ng-click="removeSearchTag(tag)" class="removable-tag" data-ng-repeat="tag in searchTags">{{tag}}<i
+                        class="fi-x-circle"></i></span>
+
+                <a
                         data-reveal-id="myModal" class="add-button"> <i class="fi-plus"></i></a>
                 <a href="#search/{{href}}" class="small button right">Relancer recherche</a>
                 <hr/>
@@ -15,8 +18,8 @@
 
         <div id="myModal" class="reveal-modal">
             <ul class="small-block-grid-2 large-block-grid-4">
-                <li data-ng-click="addTag(tag)" class="removable-tag"
-                      data-ng-repeat="tag in tagsList">{{tag}}</li>
+                <li data-ng-repeat="tag in allTags"><span data-ng-click="addSearchTag(tag.title)" data-ng-class="tag.status">{{tag.title}}<i
+                        class="fi-plus"></i></span></li>
             </ul>
             <a class="close-reveal-modal">&#215;</a>
         </div>
