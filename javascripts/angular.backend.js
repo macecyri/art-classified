@@ -1,7 +1,77 @@
 var app = angular.module('app', ['ngRoute']);
 
 
-var ListClassifiedController = function ($scope, $routeParams) {
+app.factory('tagsManagementService', function () {
+    var updateTagSelection = function (tag, status, allTags) {
+        for (var i = 0; i < allTags.length; i += 1) {
+            if (allTags[i].title === tag) {
+                allTags[i].status = status;
+            }
+        }
+    }
+
+
+    return {
+        initialiseAllTags: function () {
+        return  [ {title: 'tag1', status: 'addable-tag'},
+            {title: 'tag2', status: 'addable-tag'},
+            {title: 'tag3', status: 'addable-tag'},
+            {title: 'tag4', status: 'addable-tag'},
+            {title: 'tag5', status: 'addable-tag'}]
+    }
+
+  ,
+
+        removeParameterTag: function (parameterTags, allTags, tag) {
+            var index = parameterTags.indexOf(tag);
+            if (index > -1) {
+                parameterTags.splice(index, 1);
+                updateTagSelection(tag, 'addable-tag', allTags);
+            }
+        },
+
+        addParameterTag: function (parameterTags, allTags, tag) {
+            if ($.inArray(tag, parameterTags) === -1) {
+                parameterTags.push(tag);
+                updateTagSelection(tag, 'added-tag', allTags);
+            }
+        }
+    }
+});
+
+function CreateClassifiedController($scope, tagsManagementService) {
+    $scope.allTags = tagsManagementService.initialiseAllTags();
+    $scope.parameterTags = ['label1', 'label2', 'label5'];
+
+
+    $scope.removeParameterTag = function (tag) {
+        tagsManagementService.removeParameterTag($scope.parameterTags, $scope.allTags, tag);
+    }
+
+    $scope.addParameterTag = function (tag) {
+        tagsManagementService.addParameterTag($scope.parameterTags, $scope.allTags, tag);
+    }
+
+
+}
+
+
+function ListClassifiedController($scope, $routeParams, tagsManagementService) {
+    $scope.allTags = tagsManagementService.initialiseAllTags();
+    $scope.parameterTags = ['label1', 'label2', 'label3'];
+
+
+
+    $scope.removeParameterTag = function (tag) {
+        tagsManagementService.removeParameterTag($scope.parameterTags, $scope.allTags, tag);
+        $scope.href = $scope.parameterTags.join('+');
+    }
+
+    $scope.addParameterTag = function (tag) {
+        tagsManagementService.addParameterTag($scope.parameterTags, $scope.allTags, tag);
+        $scope.href = $scope.parameterTags.join('+');
+    }
+
     $scope.classifieds = [
         {title: 'je cherche qqun', date: '02/04/2013', criterias: [
             {class: 'fi-ticket'},
@@ -33,50 +103,24 @@ var ListClassifiedController = function ($scope, $routeParams) {
     ];
 
     $scope.test = $routeParams.labels;
-    $scope.searchTags = ['label1', 'label2', 'label3'];
-    $scope.allTags = [{title:'tag1', status:'addable-tag'}, {title:'tag2', status:'addable-tag'}, {title:'tag3', status:'addable-tag'}, {title:'tag4', status:'addable-tag'}, {title:'tag5', status:'addable-tag'} ];
+
+}
 
 
-    $scope.removeSearchTag = function (tag) {
-        var index = $scope.searchTags.indexOf(tag);
-        if (index > -1) {
-            $scope.searchTags.splice(index, 1);
-            updateTagSelection(tag, 'addable-tag');
-        }
-        updateHrefSearch();
-    }
-
-
-
-    $scope.addSearchTag = function (tag) {
-        if ($.inArray(tag, $scope.searchTags) === -1){
-            $scope.searchTags.push(tag);
-            updateTagSelection(tag, 'added-tag');
-            updateHrefSearch();
-        }
-    }
-
-
-    var updateTagSelection = function (tag, status) {
-        for(var i = 0; i < $scope.allTags.length; i += 1) {
-            if($scope.allTags[i].title === tag) {
-                $scope.allTags[i].status = status;
-            }
-        }
-    }
-
-    var updateHrefSearch = function () {
-        $scope.href = $scope.searchTags.join('+');
-    }
-
-    updateHrefSearch();
-
-};
 
 
 app.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.
         when('/', {controller: ListClassifiedController, templateUrl: 'listClassifieds.html'}).
         when('/search/:labels', {controller: ListClassifiedController, templateUrl: 'listClassifieds.html'}).
+        when('/create', {controller: CreateClassifiedController, templateUrl: 'CreateClassifieds.html'}).
         otherwise({redirectTo: '/'});
 }]);
+
+
+app.directive('tagchoose', function () {
+    return {
+        templateUrl: 'tag-choose.html'
+    }
+});
+
