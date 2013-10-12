@@ -24,7 +24,7 @@
                 <div class="panel">
                     <div class="row">
                         <div class="small-3 columns icon-classified">
-                            <i ng-repeat="criteria in classified.criterias" class="{{criteria.class}}"></i></div>
+                            <i  class="fi-music"></i></div>
                         <div class=" small-9 columns">
 
                             <div class="row">
@@ -33,10 +33,10 @@
                             <div class="row">
                                 <div class="small-9 columns">
 
-                                <span ng-repeat="label in classified.labels | filter:searchlabel">
-                                    <a href="#search/{{label.title}}" class="tiny button">{{label.title}}</a> </span>
+                                <span ng-repeat="tag in classified.relatedTags ">
+                                    <a href="#search/{{tag.name}}" class="tiny button">{{tag.name}}</a> </span>
                                 </div>
-                                <div class="small-3 columns date-classified">{{classified.date}}</div>
+                                <div class="small-3 columns date-classified">22-22-22</div>
                             </div>
                         </div>
                     </div>

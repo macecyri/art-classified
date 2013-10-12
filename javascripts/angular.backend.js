@@ -1,5 +1,10 @@
-var app = angular.module('app', ['ngRoute']);
+var app = angular.module('app', ['ngRoute', 'ngResource']);
 
+app.factory('classifiedsResource', ['$resource', function ($resource) {
+    return $resource(
+        'http://localhost:8080/restclassifieds/classifieds')
+        ;
+}]);
 
 app.factory('tagsManagementService', function () {
     var updateTagSelection = function (tag, status, allTags) {
@@ -56,7 +61,7 @@ function CreateClassifiedController($scope, tagsManagementService) {
 }
 
 
-function ListClassifiedController($scope, $routeParams, tagsManagementService) {
+function ListClassifiedController($scope, $routeParams, tagsManagementService, classifiedsResource) {
     $scope.allTags = tagsManagementService.initialiseAllTags();
     $scope.parameterTags = ['label1', 'label2', 'label3'];
 
@@ -72,7 +77,9 @@ function ListClassifiedController($scope, $routeParams, tagsManagementService) {
         $scope.href = $scope.parameterTags.join('+');
     }
 
-    $scope.classifieds = [
+    $scope.classifieds = classifiedsResource.query();
+
+    /*[
         {title: 'je cherche qqun', date: '02/04/2013', criterias: [
             {class: 'fi-ticket'},
             {class: 'fi-music'},
@@ -96,12 +103,11 @@ function ListClassifiedController($scope, $routeParams, tagsManagementService) {
         ]},
         {title: 'des metalleux?', date: '01/01/2013', criterias: [
             {class: 'fi-music'}
-        ], labels: [
+        ], labels: [*//*
             {title: 'unique'},
             {title: 'test'}
         ]}
-    ];
-
+    ];*/
     $scope.test = $routeParams.labels;
 
 }
@@ -110,6 +116,7 @@ function ListClassifiedController($scope, $routeParams, tagsManagementService) {
 
 
 app.config(['$routeProvider', function ($routeProvider) {
+
     $routeProvider.
         when('/', {controller: ListClassifiedController, templateUrl: 'listClassifieds.html'}).
         when('/search/:labels', {controller: ListClassifiedController, templateUrl: 'listClassifieds.html'}).
