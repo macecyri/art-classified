@@ -6,12 +6,10 @@ app.factory('classifiedService', ['$resource', function ($resource) {
     var resource_tags = resource_base_url + 'tags';
 
 
-    var updateTagSelection = function (tag, status, allTags) {
-        for (var i = 0; i < allTags.length; i += 1) {
-            if (allTags[i].name === tag) {
-                allTags[i].status = status;
-            }
-        }
+    var refreshSearch = function (href, parameterTags) {
+        href = parameterTags.map(function (elem) {
+            return elem.id;
+        }).join('+');
     }
 
 
@@ -20,72 +18,92 @@ app.factory('classifiedService', ['$resource', function ($resource) {
             return $resource(resource_tags).query();
         },
 
+        returnCorrespondingTag: function (listTagsIds, href, parameterTags) {
+            return $resource(resource_tags + '/' + listTagsIds).query(function () {
+                refreshSearch(href, parameterTags)
+            });
+        },
+
         getAllClassifieds: function () {
             return  $resource(resource_classified).query();
         },
 
 
-        removeParameterTag: function (parameterTags, allTags, tag) {
+        removeParameterTag: function (parameterTags, tag) {
             var index = parameterTags.indexOf(tag);
             if (index > -1) {
                 parameterTags.splice(index, 1);
-                updateTagSelection(tag, 'addable-tag', allTags);
             }
         },
 
-        addParameterTag: function (parameterTags, allTags, tag) {
+        addParameterTag: function (parameterTags, tag) {
             if ($.inArray(tag, parameterTags) === -1) {
                 parameterTags.push(tag);
-                updateTagSelection(tag, 'added-tag', allTags);
             }
         },
 
-        whatClass: function (value) {
-            if (value !== undefined) {
-                return value;
+        refreshSearch: refreshSearch,
+
+        whatClass: function (tag, parameterTags) {
+            if ($.inArray(tag, parameterTags) === -1) {
+                return 'addable-tag';
             }
-            else return "addable-tag";
+            else {
+                return 'added-tag';
+            }
         }
     }
 }]);
 
 function CreateClassifiedController($scope, classifiedService) {
     $scope.allTags = classifiedService.getAllTags();
-    $scope.parameterTags = ['label1', 'label2', 'label5'];
+    $scope.parameterTags = [
+        {"id": 2, "name": "tag1"}
+    ];
 
 
     $scope.removeParameterTag = function (tag) {
-        classifiedService.removeParameterTag($scope.parameterTags, $scope.allTags, tag);
+        classifiedService.removeParameterTag($scope.parameterTags, tag);
     }
 
     $scope.addParameterTag = function (tag) {
-        classifiedService.addParameterTag($scope.parameterTags, $scope.allTags, tag);
+        classifiedService.addParameterTag($scope.parameterTags, tag);
     }
 
-    $scope.whatClass = classifiedService.whatClass;
-
+    $scope.whatClass = function (tag) {
+        return classifiedService.whatClass(tag, $scope.parameterTags);
+    }
 
 }
 
 
 function ListClassifiedController($scope, $routeParams, classifiedService) {
+
     $scope.allTags = classifiedService.getAllTags();
-    $scope.parameterTags = ['label1', 'label2', 'label3'];
+
+    $scope.href = [];
+    $scope.parameterTags = [];
+
+    if ($routeParams.tagsId !== undefined) {
+        $scope.parameterTags = classifiedService.returnCorrespondingTag($routeParams.tagsId, $scope.href, $scope.parameterTags);
+    }
 
 
     $scope.removeParameterTag = function (tag) {
-        classifiedService.removeParameterTag($scope.parameterTags, $scope.allTags, tag);
-        $scope.href = $scope.parameterTags.join('+');
+        classifiedService.removeParameterTag($scope.parameterTags, tag);
+        classifiedService.refreshSearch($scope.href, $scope.parameterTags);
     }
 
     $scope.addParameterTag = function (tag) {
-        classifiedService.addParameterTag($scope.parameterTags, $scope.allTags, tag);
-        $scope.href = $scope.parameterTags.join('+');
+        classifiedService.addParameterTag($scope.parameterTags, tag);
+        classifiedService.refreshSearch($scope.href, $scope.parameterTags);
     }
 
     $scope.classifieds = classifiedService.getAllClassifieds();
 
-    $scope.whatClass = classifiedService.whatClass;
+    $scope.whatClass = function (tag) {
+        return classifiedService.whatClass(tag, $scope.parameterTags);
+    }
 
     /*[
      {title: 'je cherche qqun', date: '02/04/2013', criterias: [
@@ -117,7 +135,6 @@ function ListClassifiedController($scope, $routeParams, classifiedService) {
      {title: 'test'}
      ]}
      ];*/
-    $scope.test = $routeParams.labels;
 
 }
 
@@ -126,7 +143,7 @@ app.config(['$routeProvider', function ($routeProvider) {
 
     $routeProvider.
         when('/', {controller: ListClassifiedController, templateUrl: 'listClassifieds.html'}).
-        when('/search/:labels', {controller: ListClassifiedController, templateUrl: 'listClassifieds.html'}).
+        when('/search/:tagsId', {controller: ListClassifiedController, templateUrl: 'listClassifieds.html'}).
         when('/create', {controller: CreateClassifiedController, templateUrl: 'CreateClassifieds.html'}).
         otherwise({redirectTo: '/'});
 }]);
