@@ -6,22 +6,18 @@ app.factory('classifiedService', ['$resource', function ($resource) {
     var resource_tags = resource_base_url + 'tags';
 
 
-    var refreshSearch = function (href, parameterTags) {
-        href = parameterTags.map(function (elem) {
-            return elem.id;
-        }).join('+');
-    }
-
-
     return {
         getAllTags: function () {
             return $resource(resource_tags).query();
         },
 
-        returnCorrespondingTag: function (listTagsIds, href, parameterTags) {
-            return $resource(resource_tags + '/' + listTagsIds).query(function () {
-                refreshSearch(href, parameterTags)
-            });
+        getNameTag: function (allTags, tagId) {
+            for (var i = 0; i < allTags.length; i++) {
+                if (allTags[i].id == tagId) {
+                    return allTags[i].name;
+                }
+            }
+
         },
 
         getAllClassifieds: function () {
@@ -29,27 +25,25 @@ app.factory('classifiedService', ['$resource', function ($resource) {
         },
 
 
-        removeParameterTag: function (parameterTags, tag) {
-            var index = parameterTags.indexOf(tag);
+        removeParameterTag: function (parameterTagIds, tagId) {
+            var index = parameterTagIds.indexOf(tagId);
             if (index > -1) {
-                parameterTags.splice(index, 1);
+                parameterTagIds.splice(index, 1);
             }
         },
 
-        addParameterTag: function (parameterTags, tag) {
-            if ($.inArray(tag, parameterTags) === -1) {
-                parameterTags.push(tag);
+        addParameterTag: function (parameterTagIds, tagId) {
+            if (parameterTagIds.indexOf(tagId) === -1) {
+                parameterTagIds.push(tagId);
             }
         },
 
-        refreshSearch: refreshSearch,
-
-        whatClass: function (tag, parameterTags) {
-            if ($.inArray(tag, parameterTags) === -1) {
-                return 'addable-tag';
+        whatClass: function (parameterTagIds, tagId) {
+            if (parameterTagIds.indexOf(tagId) > -1) {
+                return 'added-tag';
             }
             else {
-                return 'added-tag';
+                return 'addable-tag';
             }
         }
     }
@@ -80,61 +74,32 @@ function CreateClassifiedController($scope, classifiedService) {
 function ListClassifiedController($scope, $routeParams, classifiedService) {
 
     $scope.allTags = classifiedService.getAllTags();
-
-    $scope.href = [];
-    $scope.parameterTags = [];
-
-    if ($routeParams.tagsId !== undefined) {
-        $scope.parameterTags = classifiedService.returnCorrespondingTag($routeParams.tagsId, $scope.href, $scope.parameterTags);
-    }
-
-
-    $scope.removeParameterTag = function (tag) {
-        classifiedService.removeParameterTag($scope.parameterTags, tag);
-        classifiedService.refreshSearch($scope.href, $scope.parameterTags);
-    }
-
-    $scope.addParameterTag = function (tag) {
-        classifiedService.addParameterTag($scope.parameterTags, tag);
-        classifiedService.refreshSearch($scope.href, $scope.parameterTags);
-    }
-
     $scope.classifieds = classifiedService.getAllClassifieds();
 
-    $scope.whatClass = function (tag) {
-        return classifiedService.whatClass(tag, $scope.parameterTags);
+    $scope.parameterTagIds = [];
+
+    if ($routeParams.tagsId !== undefined) {
+        var parameterTagsIdsString = $routeParams.tagsId.split('+');
+        $scope.parameterTagIds  = parameterTagsIdsString.map(function(elem){
+            return parseInt(elem);
+        })
     }
 
-    /*[
-     {title: 'je cherche qqun', date: '02/04/2013', criterias: [
-     {class: 'fi-ticket'},
-     {class: 'fi-music'},
-     {class: 'fi-microphone'}
-     ], labels: [
-     {title: 'label1'},
-     {title: 'label2'},
-     {title: 'label3'}
-     ]},
-     {title: 'des metalleux?', date: '01/01/2013', criterias: [
-     {class: 'fi-music'}
-     ], labels: [
-     {title: 'label1'},
-     {title: 'label3'}
-     ]},
-     {title: 'des metalleux?', date: '01/01/2013', criterias: [
-     {class: 'fi-music'}
-     ], labels: [
-     {title: 'test'},
-     {title: 'label3'}
-     ]},
-     {title: 'des metalleux?', date: '01/01/2013', criterias: [
-     {class: 'fi-music'}
-     ], labels: [*/
-    /*
-     {title: 'unique'},
-     {title: 'test'}
-     ]}
-     ];*/
+    $scope.removeParameterTag = function (tagId) {
+        classifiedService.removeParameterTag($scope.parameterTagIds, tagId);
+    }
+
+    $scope.addParameterTag = function (tagId) {
+        classifiedService.addParameterTag($scope.parameterTagIds, tagId);
+    }
+
+    $scope.whatClass = function (tagId) {
+        return classifiedService.whatClass($scope.parameterTagIds, tagId);
+    }
+
+    $scope.getNameTag = function (tagId) {
+        return $scope.allTags[tagId - 1].name;
+    }
 
 }
 
