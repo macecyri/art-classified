@@ -7,23 +7,22 @@ app.factory('classifiedService', ['$resource', function ($resource) {
 
 
     return {
+
+        Classified: $resource(resource_classified),
+
         getAllTags: function () {
             return $resource(resource_tags).query();
         },
 
         getNameTag: function (allTags, tagId) {
-            for (var i = 0; i < allTags.length; i++) {
-                if (allTags[i].id == tagId) {
-                    return allTags[i].name;
-                }
+
+            if (typeof allTags !== 'undefined' && allTags.length > 0) {
+                return allTags[tagId - 1].name;
             }
-
+            else {
+                return 'wait...'
+            }
         },
-
-        getAllClassifieds: function () {
-            return  $resource(resource_classified).query();
-        },
-
 
         removeParameterTag: function (parameterTagIds, tagId) {
             var index = parameterTagIds.indexOf(tagId);
@@ -49,42 +48,11 @@ app.factory('classifiedService', ['$resource', function ($resource) {
     }
 }]);
 
-function CreateClassifiedController($scope, classifiedService) {
+function CreateClassifiedController($scope, $location, classifiedService) {
+
+    /*  Common functions */
     $scope.allTags = classifiedService.getAllTags();
-    $scope.parameterTags = [
-        {"id": 2, "name": "tag1"}
-    ];
-
-
-    $scope.removeParameterTag = function (tag) {
-        classifiedService.removeParameterTag($scope.parameterTags, tag);
-    }
-
-    $scope.addParameterTag = function (tag) {
-        classifiedService.addParameterTag($scope.parameterTags, tag);
-    }
-
-    $scope.whatClass = function (tag) {
-        return classifiedService.whatClass(tag, $scope.parameterTags);
-    }
-
-}
-
-
-function ListClassifiedController($scope, $routeParams, classifiedService) {
-
-    $scope.allTags = classifiedService.getAllTags();
-    $scope.classifieds = classifiedService.getAllClassifieds();
-
     $scope.parameterTagIds = [];
-
-    if ($routeParams.tagsId !== undefined) {
-        var parameterTagsIdsString = $routeParams.tagsId.split('+');
-        $scope.parameterTagIds  = parameterTagsIdsString.map(function(elem){
-            return parseInt(elem);
-        })
-    }
-
     $scope.removeParameterTag = function (tagId) {
         classifiedService.removeParameterTag($scope.parameterTagIds, tagId);
     }
@@ -98,8 +66,87 @@ function ListClassifiedController($scope, $routeParams, classifiedService) {
     }
 
     $scope.getNameTag = function (tagId) {
-        return $scope.allTags[tagId - 1].name;
+        return classifiedService.getNameTag($scope.allTags, tagId);
     }
+    /*  End Common functions */
+
+    $scope.createClassifiedTitle = '';
+
+    $scope.saveClassified = function () {
+        var classified = new classifiedService.Classified();
+        classified.title = $scope.createClassifiedTitle;
+        classified.parameterTagIds = $scope.parameterTagIds;
+        classified.$save(function () {
+            $location.path('/');
+            $scope.test='eee';
+        });
+
+    }
+
+}
+
+
+function ListClassifiedController($scope, $routeParams, $location, classifiedService) {
+
+    /*  Common functions */
+    $scope.allTags = classifiedService.getAllTags();
+    $scope.parameterTagIds = [];
+    $scope.removeParameterTag = function (tagId) {
+        classifiedService.removeParameterTag($scope.parameterTagIds, tagId);
+    }
+
+    $scope.addParameterTag = function (tagId) {
+        classifiedService.addParameterTag($scope.parameterTagIds, tagId);
+    }
+
+    $scope.whatClass = function (tagId) {
+        return classifiedService.whatClass($scope.parameterTagIds, tagId);
+    }
+
+    $scope.getNameTag = function (tagId) {
+        return classifiedService.getNameTag($scope.allTags, tagId);
+    }
+    /*  End Common functions */
+
+
+    if ($routeParams.tagsId !== undefined) {
+        var parameterTagsIdsString = $routeParams.tagsId.split('+');
+        $scope.parameterTagIds = parameterTagsIdsString.map(function (elem) {
+            return parseInt(elem);
+        })
+    }
+
+    var isParameterTag = function () {
+        if (typeof $scope.parameterTagIds !== 'undefined' && $scope.parameterTagIds.length > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+
+    }
+
+    var getAllClassifieds = function () {
+        if (isParameterTag()) {
+            $scope.classifieds = classifiedService.Classified.query({tags: $scope.parameterTagIds.join(',')});
+        } else {
+            $scope.classifieds = classifiedService.Classified.query();
+        }
+    }
+
+    $scope.searchAllClassifieds = function () {
+
+        if (isParameterTag()) {
+            $location.path('/tags=' + $scope.parameterTagIds.join('+'));
+        }
+        else {
+            $location.path('/');
+        }
+        getAllClassifieds();
+    }
+
+
+    getAllClassifieds();
 
 }
 
@@ -108,7 +155,7 @@ app.config(['$routeProvider', function ($routeProvider) {
 
     $routeProvider.
         when('/', {controller: ListClassifiedController, templateUrl: 'listClassifieds.html'}).
-        when('/search/:tagsId', {controller: ListClassifiedController, templateUrl: 'listClassifieds.html'}).
+        when('/tags=:tagsId', {controller: ListClassifiedController, templateUrl: 'listClassifieds.html'}).
         when('/create', {controller: CreateClassifiedController, templateUrl: 'CreateClassifieds.html'}).
         otherwise({redirectTo: '/'});
 }]);
