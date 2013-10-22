@@ -1,0 +1,21 @@
+<div class="row">
+    <div class="large-12 columns">
+        <ul id="list-classified">
+            <li data-ng-repeat="post in posts | filter:search">
+                <div class="panel">
+                    <div class="row">
+                        <div class="small-3 columns">
+                            <span>{{post.submitter}}</span>
+                        </div>
+                        <div class=" small-9 columns">
+                            <span>{{post.content}}</span>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    Submitter: <input ng-model="submitter" type="text" name="fname">
+    Content: <input ng-model="content" type="text" name="fname">
+    <a data-ng-click="savePost()" class="small button right">Post</a>
+</div>

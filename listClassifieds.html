@@ -1,10 +1,23 @@
 <div class="row">
     <div class="large-12 columns">
+        <h3>Bienvenu sur CoopArt, le site de regroupement d'artistes </h3>
+
+        <p>Vous pouvez <a href="#/create" class="small button">creer une annonce</a> ou regarder les annonces existantes
+            pour trouver vos prochains associés de votre projet artistique</p>
+        <hr/>
+    </div>
+    <div class="large-12 columns">
 
         <div class="row">
-            <div class="small-12 columns"> Recherche par tags: {{test}}
+            <div class="small-12 columns"> Recherche par tags:
 
-                <span data-tagchoose></span>
+                <span data-tagchoose></span></div>
+            <div class="small-12 columns"> Recherche par departement:
+
+                <span data-departmentchoose></span></div>
+            <div class="small-12 columns"> Recherche par disponibilite:
+
+                <span data-calendarchoose></span>
 
                 <a data-ng-click="searchAllClassifieds()" class="small button right">Relancer recherche</a>
                 <hr/>
@@ -28,7 +41,7 @@
                         <div class=" small-9 columns">
 
                             <div class="row">
-                                <div class="small-12 columns">{{classified.title}}</div>
+                                <div class="small-12 columns"><a href="#/classifieds/{{classified.id}}/posts">{{classified.title}}</a></div>
                             </div>
                             <div class="row">
                                 <div class="small-9 columns">
@@ -41,6 +54,7 @@
                         </div>
                     </div>
                 </div>
+
             </li>
         </ul>
     </div>

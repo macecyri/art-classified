@@ -1,0 +1,17 @@
+<span data-ng-click="service.removeParameter(listIdParameterCal,id)" class="removable-tag" data-ng-repeat="id in listIdParameterCal">{{service.getNameParameter(allCal, id)}}
+    <i class="fi-x-circle"></i>
+</span>
+<a data-reveal-id="MyModalCal" class="add-button">
+    <i class="fi-plus"></i>
+</a>
+
+
+<div id="MyModalCal" class="reveal-modal">
+    <ul class="small-block-grid-2 large-block-grid-4">
+        <li data-ng-repeat="parameter in allCal">
+            <span data-ng-click="service.addParameter(listIdParameterCal,parameter.id)" data-ng-class="service.whatClassParameter(listIdParameterCal,parameter.id)">{{parameter.name}}
+            <i class="icon-add"></i></span></li>
+    </ul>
+    <a class="close-reveal-modal"> &#215;</a>
+</div>
+

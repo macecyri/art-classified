@@ -1,17 +1,16 @@
-<span data-ng-click="removeParameterTag(tagId)" class="removable-tag" data-ng-repeat="tagId in parameterTagIds">{{getNameTag(tagId)}}
+<span data-ng-click="service.removeParameter(listIdParameterTag,id)" class="removable-tag" data-ng-repeat="id in listIdParameterTag">{{service.getNameParameter(allTag, id)}}
     <i class="fi-x-circle"></i>
 </span>
-<a data-reveal-id="MyModal" class="add-button">
+<a data-reveal-id="MyModalTag" class="add-button">
     <i class="fi-plus"></i>
 </a>
 
 
-<div id="MyModal" class="reveal-modal">
+<div id="MyModalTag" class="reveal-modal">
     <ul class="small-block-grid-2 large-block-grid-4">
-        <li data-ng-repeat="tag in allTags"> 
-            <span data-ng-click="addParameterTag(tag.id)" data-ng-class="whatClass(tag.id)">{{tag.name}}
+        <li data-ng-repeat="parameter in allTag">
+            <span data-ng-click="service.addParameter(listIdParameterTag,parameter.id)" data-ng-class="service.whatClassParameter(listIdParameterTag,parameter.id)">{{parameter.name}}
             <i class="icon-add"></i></span></li>
     </ul>
     <a class="close-reveal-modal"> &#215;</a>
 </div>
-

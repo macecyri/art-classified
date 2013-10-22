@@ -1,0 +1,17 @@
+<span data-ng-click="service.removeParameter(listIdParameterDep,id)" class="removable-tag" data-ng-repeat="id in listIdParameterDep">{{service.getNameParameter(allDep, id)}}
+    <i class="fi-x-circle"></i>
+</span>
+<a data-reveal-id="MyModalDep" class="add-button">
+    <i class="fi-plus"></i>
+</a>
+
+
+<div id="MyModalDep" class="reveal-modal">
+    <ul class="small-block-grid-2 large-block-grid-4">
+        <li data-ng-repeat="parameter in allDep">
+            <span data-ng-click="service.addParameter(listIdParameterDep,parameter.id)" data-ng-class="service.whatClassParameter(listIdParameterDep,parameter.id)">{{parameter.name}}
+            <i class="icon-add"></i></span></li>
+    </ul>
+    <a class="close-reveal-modal"> &#215;</a>
+</div>
+
