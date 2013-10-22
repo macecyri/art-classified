@@ -3,7 +3,7 @@ var app = angular.module('app', ['ngRoute', 'ngResource']);
 app.factory('classifiedService', ['$resource', function ($resource) {
     var resource_base_url = 'http://localhost:8080/restclassifieds/';
     var resource_classified = resource_base_url + 'classifieds';
-    var resource_tags = resource_base_url + 'tags';
+    var resource_parameter = resource_base_url + '/:parameter';
     var resource_post = resource_classified + '/:classifiedId/posts';
 
 
@@ -11,17 +11,21 @@ app.factory('classifiedService', ['$resource', function ($resource) {
 
         Classified: $resource(resource_classified),
 
-        getAllPosts: function (classifiedId) {
-            return $resource(resource_post,{classifiedId:classifiedId}).query();
+        getClassified: function (classifiedId, callback) {
+            return $resource(resource_classified + '/' + classifiedId).get(callback);
         },
 
-        initializePost : function (classifiedId, submitter, content, $route) {
-             $resource(resource_post, {classifiedId:classifiedId}).save({submitter:submitter, content:content}, function () {
-                 $route.reload();
-             });
+        getAllPosts: function (classifiedId) {
+            return $resource(resource_post, {classifiedId: classifiedId}).query();
         },
-        getAllTags: function () {
-            return $resource(resource_tags).query();
+
+        initializePost: function (classifiedId, submitter, content, $route) {
+            $resource(resource_post, {classifiedId: classifiedId}).save({submitter: submitter, content: content}, function () {
+                $route.reload();
+            });
+        },
+        getAllInstancesParameter: function (parameter) {
+            return $resource(resource_parameter, {parameter: parameter}).query();
         },
 
         getNameParameter: function (allParameters, parameterId) {
@@ -56,24 +60,31 @@ app.factory('classifiedService', ['$resource', function ($resource) {
             }
         }
     }
-}]);
+}])
+;
 
 function CreateClassifiedController($scope, $location, classifiedService) {
 
+    $scope.service = classifiedService;
 
-    $scope.allTag = classifiedService.getAllTags();
+
+    $scope.allDep = classifiedService.getAllInstancesParameter("deps");
+    $scope.listIdParameterDep = [];
+    $scope.allCal = classifiedService.getAllInstancesParameter("cals");
+    $scope.listIdParameterCal = [];
+    $scope.allTag = classifiedService.getAllInstancesParameter("tags");
     $scope.listIdParameterTag = [];
-
 
 
     $scope.saveClassified = function () {
         var classified = new classifiedService.Classified();
         classified.title = $scope.title;
         classified.description = $scope.description;
-        classified.parameterTagIds = $scope.parameterTagIds;
+        classified.parameterTagIds = $scope.listIdParameterTag;
+        classified.parameterDepIds = $scope.listIdParameterDep;
+        classified.parameterCalIds = $scope.listIdParameterCal;
         classified.$save(function () {
             $location.path('/');
-            $scope.test = 'eee';
         });
 
     }
@@ -85,17 +96,12 @@ function ListClassifiedController($scope, $routeParams, $location, classifiedSer
 
     $scope.service = classifiedService;
 
-    $scope.allDep = [{"id":1, name:"Ain"}, {"id":2, "name":"Loire-Atlantique"}, {"id":3, "name":"Oise"}];
+    $scope.allDep = classifiedService.getAllInstancesParameter("deps");
     $scope.listIdParameterDep = [];
-
-    $scope.allCal = [{"id":1, name:"Semaine"}, {"id":2, "name":"Week-end"}, {"id":3, "name":"Journee"}, {"id":4, "name":"Soiree"}, ];
+    $scope.allCal = classifiedService.getAllInstancesParameter("cals");
     $scope.listIdParameterCal = [];
-
-
-    $scope.allTag = classifiedService.getAllTags();
-
+    $scope.allTag = classifiedService.getAllInstancesParameter("tags");
     $scope.listIdParameterTag = [];
-
 
 
     if ($routeParams.tagsId !== undefined) {
@@ -104,7 +110,6 @@ function ListClassifiedController($scope, $routeParams, $location, classifiedSer
             return parseInt(elem);
         })
     }
-
 
 
     /* Search */
@@ -142,10 +147,14 @@ function ListClassifiedController($scope, $routeParams, $location, classifiedSer
 
 }
 
-function PostController($scope, $routeParams, $location, classifiedService, $route) {
+function ClassifiedController($scope, $routeParams, $location, classifiedService, $route, $sce) {
 
 
     if ($routeParams.classifiedId !== undefined) {
+        $scope.classified = classifiedService.getClassified($routeParams.classifiedId, function() {
+            $scope.description = $sce.trustAs($sce.HTML, $scope.classified.description);
+        });
+
         $scope.posts = classifiedService.getAllPosts($routeParams.classifiedId);
     }
 
@@ -161,7 +170,7 @@ app.config(['$routeProvider', function ($routeProvider) {
         when('/', {controller: ListClassifiedController, templateUrl: 'listClassifieds.html'}).
         when('/tags=:tagsId', {controller: ListClassifiedController, templateUrl: 'listClassifieds.html'}).
         when('/create', {controller: CreateClassifiedController, templateUrl: 'CreateClassifieds.html'}).
-        when('/classifieds/:classifiedId/posts', {controller: PostController, templateUrl: 'Posts.html'}).
+        when('/classifieds/:classifiedId', {controller: ClassifiedController, templateUrl: 'Classified.html'}).
         otherwise({redirectTo: '/'});
 }]);
 
@@ -185,26 +194,26 @@ app.directive('calendarchoose', function () {
 });
 
 
-app.directive('ckeditor', function() {
+app.directive('ckeditor', function () {
     return {
         require: '?ngModel',
-        link: function(scope, elm, attr, ngModel) {
+        link: function (scope, elm, attr, ngModel) {
             var ck = CKEDITOR.replace(elm[0]);
 
             if (!ngModel) return;
 
-            ck.on('instanceReady', function() {
+            ck.on('instanceReady', function () {
                 ck.setData(ngModel.$viewValue);
             });
 
 
-            ck.on('pasteState', function() {
-                scope.$apply(function() {
+            ck.on('pasteState', function () {
+                scope.$apply(function () {
                     ngModel.$setViewValue(ck.getData());
                 });
             });
 
-            ngModel.$render = function(value) {
+            ngModel.$render = function (value) {
                 ck.setData(ngModel.$viewValue);
             };
         }

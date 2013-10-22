@@ -1,21 +1,16 @@
 <div class="row">
-    <div class="large-12 columns">
-
-        Titre: <input ng-model="title" type="text" name="fname">
-
-        Description: <textarea ckeditor ng-model="description" type="text" name="fname"></textarea>
-
-        <div class="small-12 columns"> Tags de l'annonce:
-
-            <span data-tagchoose></span>
-
-
-            <hr/>
-        </div>
-
-    </div>
-
-
-    <a data-ng-click="saveClassified()" class="small button right">Creer annonce</a>
-
+    Titre: <input ng-model="title" type="text" name="fname"></div>
+<div class="row">
+    Description: <textarea ckeditor ng-model="description" type="text" name="fname"></textarea></div>
+<div class="row"> tags:
+    <span data-tagchoose></span>
+</div>
+<div class="row"> departement:
+    <span data-departmentchoose></span>
+</div>
+<div class="row"> disponibilite:
+    <span data-calendarchoose></span>
+    <hr/>
+</div>
+<a data-ng-click="saveClassified()" class="small button right">Creer annonce</a>
 </div>

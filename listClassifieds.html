@@ -9,21 +9,17 @@
     <div class="large-12 columns">
 
         <div class="row">
-            <div class="small-12 columns"> Recherche par tags:
-
-                <span data-tagchoose></span></div>
-            <div class="small-12 columns"> Recherche par departement:
-
-                <span data-departmentchoose></span></div>
-            <div class="small-12 columns"> Recherche par disponibilite:
-
+            <div class="small-12 columns"> tags:
+                <span data-tagchoose></span>
+            </div>
+            <div class="small-12 columns"> departement:
+                <span data-departmentchoose></span>
+            </div>
+            <div class="small-12 columns"> disponibilite:
                 <span data-calendarchoose></span>
-
                 <a data-ng-click="searchAllClassifieds()" class="small button right">Relancer recherche</a>
                 <hr/>
-                {{test}}
             </div>
-
         </div>
 
 
@@ -37,11 +33,12 @@
                 <div class="panel">
                     <div class="row">
                         <div class="small-3 columns icon-classified">
-                            <i  class="fi-music"></i></div>
+                            <i class="fi-music"></i></div>
                         <div class=" small-9 columns">
 
                             <div class="row">
-                                <div class="small-12 columns"><a href="#/classifieds/{{classified.id}}/posts">{{classified.title}}</a></div>
+                                <div class="small-12 columns"><a href="#/classifieds/{{classified.id}}">{{classified.title}}</a>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="small-9 columns">

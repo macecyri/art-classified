@@ -1,4 +1,8 @@
-<div class="row">
+<div class="panel">
+    <p data-ng-bind-html="description"></p>
+</div>
+<hr/>
+    <div class="row">
     <div class="large-12 columns">
         <ul id="list-classified">
             <li data-ng-repeat="post in posts | filter:search">
